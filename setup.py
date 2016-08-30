@@ -3,7 +3,7 @@ from frisson.version import Version
 
 
 setuptools.setup(name='frisson',
-        version=Version('0.0.1').number,
+        version=Version('0.0.2').number,
         description='Frisson Georeferencing Toolkit',
         long_description=open('README.md').read().strip(),
         author='Tom Lynch',
@@ -11,7 +11,7 @@ setuptools.setup(name='frisson',
         url='http://github.com/attentive/frisson',
         py_modules=['frisson'],
         install_requires=[
-            'GDAL',
+            #'GDAL',
             ],
         license='MIT License',
         zip_safe=False,
