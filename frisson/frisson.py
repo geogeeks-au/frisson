@@ -33,7 +33,21 @@ def add_overviews(filename):
             "64"]
     return call(args)
 
-def add_mask(filename, mask_vectors): 
+def create_mask_vectors(output_filename, input_folder, extension="*.tif"):
+    """
+    $GDAL_PATH / gdaltindex - write_absolute_path $OUTPUT_INDEX_SHAPEFILE $INPUT_FOLDER / *.$EXT
+    :return:
+    """
+    args = [path.join(environ["GDAL_HOME"], "gdaltindex"),
+            "-write_absolute_path",
+            output_filename,
+            input_folder,
+            extension]
+    return call(args)
+
+
+
+def add_mask(filename, mask_vectors):
     pass
 
 def virtual_georeference(filename, control_points): 
