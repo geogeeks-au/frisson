@@ -1,10 +1,24 @@
 from osgeo import gdal
 from osgeo import ogr
+from subprocess import call
+from os import environ, path
 
-def canonise_map(filename): 
-    point = ogr.Geometry(ogr.wkbPoint)
-    point.AddPoint(1198054.34, 648493.09)
-    print point.ExportToWkt()
+# https://docs.python.org/2/library/subprocess.html
+# subprocess.call(args, *, stdin=None, stdout=None, stderr=None, shell=False)
+
+# $GDAL_PATH/gdal_translate $INPUTFILE -outsize $DEST_WIDTH $DESTHEIGHT \ 
+# -co COMPRESS=DEFLATE -co PHOTOMETRIC=RGB -co PROFILE=BASELINE $OUTPUT_TIF
+
+def convert_to_tiff(filename, output_filename): 
+    args = [path.join(environ["GDAL_HOME"], "gdal_translate"), 
+          filename, 
+          "-outsize", 
+          "1000", "1000", 
+          "-co", "COMPRESS=DEFLATE",
+          "-co", "PHOTOMETRIC=RGB", 
+          "-co", "PROFILE=BASELINE",
+          output_filename]
+    return call(args)
 
 def add_overviews(filename): 
     point = ogr.Geometry(ogr.wkbPoint)
