@@ -1,5 +1,5 @@
-from osgeo import gdal
-from osgeo import ogr
+#from osgeo import gdal
+#from osgeo import ogr
 from subprocess import call
 from os import environ, path
 
@@ -20,10 +20,18 @@ def convert_to_tiff(filename, output_filename):
           output_filename]
     return call(args)
 
-def add_overviews(filename): 
-    point = ogr.Geometry(ogr.wkbPoint)
-    point.AddPoint(1198054.34, 648493.09)
-    return point
+def add_overviews(filename):
+    args = [path.join(environ["GDAL_HOME"], "gdaladdo"),
+            "-r",
+            "average",
+            filename,
+            "2",
+            "4",
+            "8",
+            "16",
+            "32",
+            "64"]
+    return call(args)
 
 def add_mask(filename, mask_vectors): 
     pass
