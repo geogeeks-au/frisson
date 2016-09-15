@@ -32,7 +32,15 @@ class TestPrintPoint(unittest.TestCase):
         self.assertEquals(create_mask_vectors("tests/test_output.shp", "tests/test_output.tif"), 0,
                           "Couldn't create shapefile index")
 
-    def tearDown(self):
-        if path.isfile("tests/test_output.tif"):
-            pass
-            # remove("tests/test_output.tif")
+    @classmethod
+    def tearDownClass(self):
+        test_files = [
+            "tests/test_output.tif",
+            "tests/test_output.dbf",
+            "tests/test_output.shp",
+            "tests/test_output.shx"
+                      ]
+        for tf in test_files:
+            if path.isfile(tf):
+                remove(tf)
+
