@@ -7,7 +7,8 @@ from frisson.frisson import (
     create_mask_vectors,
     virtual_georeference,
     _points_to_string,
-    georeference
+    georeference,
+    get_map_bbbox
 )
 
 
@@ -72,6 +73,10 @@ class TestPrintPoint(unittest.TestCase):
                          self.gcp_string,
                          opts)
         )
+
+    def test_map_bbox(self):
+        self.assertEquals(get_map_bbbox("tests/test_output_referenced.tif"),
+                          0)
 
     @classmethod
     def tearDownClass(self):
