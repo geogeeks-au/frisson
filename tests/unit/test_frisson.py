@@ -65,18 +65,19 @@ class TestPrintPoint(unittest.TestCase):
                           )
 
     def test_georeference(self):
-        opts = {"MASK_OPTIONS":["17", "17", "17"],
-                "RESAMPLE_OPTION":"near"}
+        opts = {"MASK_OPTIONS":["'17 17 17'"],
+                "RESAMPLE_OPTION": "near"}
         self.assertEquals(
             georeference("tests/test_output.vrt",
                          "tests/test_output_referenced.tif",
                          self.gcp_string,
-                         opts)
+                         opts), 0
         )
 
     def test_map_bbox(self):
         self.assertEquals(get_map_bbbox("tests/test_output_referenced.tif"),
-                          0)
+                          ['Lower Left  (-9186967.204, 2427630.502) (Invalid angle,Invalid angle)',
+                           'Upper Right (-9186247.194, 2428339.250) (Invalid angle,Invalid angle)'])
 
     @classmethod
     def tearDownClass(self):
@@ -86,8 +87,9 @@ class TestPrintPoint(unittest.TestCase):
             "tests/test_output.shp",
             "tests/test_output.shx",
             "tests/test_output.vrt",
+            "test_output_referenced.tif",
+            "test_output_referenced.tif.aux.xml"
         ]
         for tf in test_files:
             if path.isfile(tf):
-                pass
-                #remove(tf)
+                remove(tf)

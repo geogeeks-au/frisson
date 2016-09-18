@@ -1,6 +1,6 @@
 # from osgeo import gdal
 # from osgeo import ogr
-from subprocess import call
+from subprocess import call, check_output
 from os import environ, path
 
 
@@ -120,12 +120,12 @@ def georeference(input_filename, output_filename, control_points, opts):
     assert "RESAMPLE_OPTION" in opts
     assert "MASK_OPTIONS" in opts
     args = [
-        path.join(environ["GDAL_HOME"], "gdal_warp"),
+        path.join(environ["GDAL_HOME"], "gdalwarp"),
         "-r",
         opts["RESAMPLE_OPTION"],
-        "-srcnodata"] + opts["MASK_OPTIONS"] + [
         "-dstalpha",
-        "s_srs",
+        "-srcnodata"] + opts["MASK_OPTIONS"] + [
+        "-s_srs",
         "EPSG:4326",
         "-co",
         "TILED=YES",
@@ -134,6 +134,7 @@ def georeference(input_filename, output_filename, control_points, opts):
         input_filename,
         output_filename
     ]
+    print(" ".join(args))
     return call(args)
 
 
@@ -141,13 +142,18 @@ def get_map_bbbox(filename):
     """
     $GDAL_PATH/gdalinfo $INPUT_WARPED_TIF
     $DO_STUFF_TO_PARSE "Lower Left" "Upper Right"
+    This is such a shitty hack but I think it's best to replace a lot of the functions with ogr.
+    So for consistancy I will keep it as is till we discuss further.
     :param filename:
     :return:
     """
     args = [
         path.join(environ["GDAL_HOME"], "gdalinfo"),
         filename,
-        "Lower Left",
-        "Upper Right"
     ]
-    return call(args)
+    bbox = []
+    output = check_output(args)
+    for line in output.split("\n"):
+        if "Upper Right" in line or "Lower Left" in line:
+            bbox.append(line)
+    return bbox
