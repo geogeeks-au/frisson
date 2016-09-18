@@ -138,4 +138,16 @@ def georeference(input_filename, output_filename, control_points, opts):
 
 
 def get_map_bbbox(filename):
-    pass
+    """
+    $GDAL_PATH/gdalinfo $INPUT_WARPED_TIF
+    $DO_STUFF_TO_PARSE "Lower Left" "Upper Right"
+    :param filename:
+    :return:
+    """
+    args = [
+        path.join(environ["GDAL_HOME"], "gdalinfo"),
+        filename,
+        "Lower Left",
+        "Upper Right"
+    ]
+    return call(args)
