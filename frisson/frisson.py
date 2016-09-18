@@ -60,13 +60,10 @@ def _points_to_string(gcp_points):
         assert type(gcp) in [list, tuple]
         assert len(gcp) == 4
         gcp_s.append(["-gcp"])
-        coords = []
         for coord in gcp:
             if type(coord) == float:
                 coord = str(coord)
-            coords.append(coord)
-
-        gcp_s[-1].append(" ".join(coords))
+            gcp_s[-1].append(coord)
     return gcp_s
 
 
@@ -82,7 +79,7 @@ $CONVERTED_TIF $VIRTUAL_WARPED.vrt $MAGIC_GCP_STRING
             "-a_srs",
             "+init=epsg:4326",
             "-of",
-            "VRT"] + [x for y in _points_to_string2(mask_vectors) for x in y] + [
+            "VRT"] + [x for y in _points_to_string(mask_vectors) for x in y] + [
             input_filename,
             output_filename,
             ]

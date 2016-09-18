@@ -14,18 +14,20 @@ class TestPrintPoint(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.gcp_points = [
-            [12895157.1042, -3756156.6509, 1989.1230,  -2999.8393],
+            [12895157.1042, -3756156.6509, 1989.1230, -2999.8393],
             [12898106.0028, -3756364.7068, 4083.4782, -3103.3251],
             [12898161.6258, -3754995.9836, 4108.2269, -2151.3432]
         ]
         cls.gcp_string = [
-            ["-gcp", "12895157.1042 -3756156.6509 "
-                     "1989.123 -2999.8393"],
-            ["-gcp", "12898106.0028 -3756364.7068 "
-                     "4083.4782 -3103.3251"],
-            ["-gcp", "12898161.6258 -3754995.9836 "
-                     "4108.2269 -2151.3432"]
+            ["-gcp", "12895157.1042",
+             "-3756156.6509",
+             "1989.123", "-2999.8393"],
+            ["-gcp", "12898106.0028", "-3756364.7068",
+             "4083.4782", "-3103.3251"],
+            ["-gcp", "12898161.6258", "-3754995.9836",
+             "4108.2269", "-2151.3432"]
         ]
+
     def test_input_exists(self):
         self.assertTrue(path.isfile("tests/cons 1636 item 3706.tif"), "Test File doesn't exist")
 
@@ -67,9 +69,8 @@ class TestPrintPoint(unittest.TestCase):
             "tests/test_output.dbf",
             "tests/test_output.shp",
             "tests/test_output.shx"
-                      ]
+        ]
         for tf in test_files:
             if path.isfile(tf):
                 pass
-                #remove(tf)
-
+                # remove(tf)
