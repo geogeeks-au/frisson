@@ -6,7 +6,8 @@ from frisson.frisson import (
     add_overviews,
     create_mask_vectors,
     virtual_georeference,
-    _points_to_string
+    _points_to_string,
+    georeference
 )
 
 
@@ -62,15 +63,26 @@ class TestPrintPoint(unittest.TestCase):
                           self.gcp_string
                           )
 
+    def test_georeference(self):
+        opts = {"MASK_OPTIONS":["17", "17", "17"],
+                "RESAMPLE_OPTION":"near"}
+        self.assertEquals(
+            georeference("tests/test_output.vrt",
+                         "tests/test_output_referenced.tif",
+                         self.gcp_string,
+                         opts)
+        )
+
     @classmethod
     def tearDownClass(self):
         test_files = [
             "tests/test_output.tif",
             "tests/test_output.dbf",
             "tests/test_output.shp",
-            "tests/test_output.shx"
+            "tests/test_output.shx",
+            "tests/test_output.vrt",
         ]
         for tf in test_files:
             if path.isfile(tf):
                 pass
-                # remove(tf)
+                #remove(tf)

@@ -81,7 +81,7 @@ def virtual_georeference(input_filename, output_filename, control_points):
     :param input_filename:
     :param output_filename:
     :param control_points: should be a list of tuples (x,y,long,lat)
-    :return: 0 return code for success
+    :return: A call function os code (0 for success)
     """
     args = [path.join(environ["GDAL_HOME"], "gdal_translate"),
             "-a_srs",
@@ -93,18 +93,48 @@ def virtual_georeference(input_filename, output_filename, control_points):
            ]
     return call(args)
 
-
-def georeference(filename, control_points, opts):
+# NOTE need to check resample option is either
+# near: nearest neighbour resampling (default, fastest algorithm, worst interpolation quality).
+# bilinear: bilinear resampling.
+# cubic: cubic resampling.
+# cubicspline: cubic spline resampling.
+# lanczos: Lanczos windowed sinc resampling.
+# average: average resampling, computes the average of all non-NODATA contributing pixels. (GDAL >= 1.10.0)
+# mode: mode resampling, selects the value which appears most often of all the sampled points. (GDAL >= 1.10.0)
+# max: maximum resampling, selects the maximum value from all non-NODATA contributing pixels. (GDAL >= 2.0.0)
+# min: minimum resampling, selects the minimum value from all non-NODATA contributing pixels. (GDAL >= 2.0.0)
+# med: median resampling, selects the median value of all non-NODATA contributing pixels. (GDAL >= 2.0.0)
+# q1: first quartile resampling, selects the first quartile value of all non-NODATA contributing pixels. (GDAL >= 2.0.0)
+# q3: third quartile resampling, selects the third quartile value of all non-NODATA contributing pixels. (GDAL >= 2.0.0)
+def georeference(input_filename, output_filename, control_points, opts):
     """
     $GDAL_PATH/gdalwarp $MEMORY_LIMIT $TRANSFORM_OPTION $RESAMPLE_OPTION \
     -dstalpha $MASK_OPTIONS -s_srs 'EPSG:4326' $VIRTUAL_WARPED.vrt \
     $REAL_WARPED_TIF -co TILED=YES -co COMPRESS=LZW
-    :param filename:
-    :param control_points:
-    :param opts:
+    :param filename: Input vrt
+    :param control_points: list of control points each control point should be a tuple/list of (x,y,long,lat)
+    :param opts: dictionary containing either "TRANSFORM_OPTIONS", "RESAMPLE_OPTIONS", "MASK_OPTIONS"
+                with options in a list
     :return:
     """
-    pass
+    assert "RESAMPLE_OPTION" in opts
+    assert "MASK_OPTIONS" in opts
+    args = [
+        path.join(environ["GDAL_HOME"], "gdal_warp"),
+        "-r",
+        opts["RESAMPLE_OPTION"],
+        "-srcnodata"] + opts["MASK_OPTIONS"] + [
+        "-dstalpha",
+        "s_srs",
+        "EPSG:4326",
+        "-co",
+        "TILED=YES",
+        "-co",
+        "COMPRESS=LZW",
+        input_filename,
+        output_filename
+    ]
+    return call(args)
 
 
 def get_map_bbbox(filename):
