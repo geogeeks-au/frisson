@@ -5,7 +5,7 @@ from frisson.frisson import (
     convert_to_tiff,
     add_overviews,
     create_mask_vectors,
-    add_mask,
+    virtual_georeference,
     _points_to_string
 )
 
@@ -51,8 +51,8 @@ class TestPrintPoint(unittest.TestCase):
         self.assertEquals(create_mask_vectors("tests/test_output.shp", "tests/test_output.tif"), 0,
                           "Couldn't create shapefile index")
 
-    def test_add_mask(self):
-        self.assertEquals(add_mask("tests/test_output.tif",
+    def test_virtual_georeference(self):
+        self.assertEquals(virtual_georeference("tests/test_output.tif",
                                    "tests/test_output.vrt",
                                    self.gcp_points), 0,
                           "Couldn't add mask")

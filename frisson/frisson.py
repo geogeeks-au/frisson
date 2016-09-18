@@ -69,29 +69,41 @@ def _points_to_string(gcp_points):
 
 def add_mask(input_filename, output_filename, mask_vectors):
     """
-    gdal_translate -of GTiff -gcp 1989.12 2999.84 1.28952e+07 -3.75616e+06 -gcp 4083.48 3103.33 1.28981e+07 -3.75636e+06 -gcp 4108.23 2151.34 1.28982e+07 -3.755e+06 "/Users/Drogon/Repos/frisson/tests/cons 1636 item 3706.tif" "/var/folders/nd/k10412g92s1bk7rll01d59y40000gn/T/cons 1636 item 3706.tif"
-    gdalwarp -r near -order 1 -co COMPRESS=NONE  "/var/folders/nd/k10412g92s1bk7rll01d59y40000gn/T/cons 1636 item 3706.tif" "/Users/Drogon/Repos/frisson/tests/cons 1636 item 3706_testref.tif"
     $GDAL_PATH/gdal_translate -a_srs '+init=epsg:4326' -of VRT \
-$CONVERTED_TIF $VIRTUAL_WARPED.vrt $MAGIC_GCP_STRING
-    mask_vectors should be a list of tuples (x,y,long,lat)
+    $CONVERTED_TIF $VIRTUAL_WARPED.vrt $MAGIC_GCP_STRING
+    """
+    pass
+
+
+def virtual_georeference(input_filename, output_filename, control_points):
+    """
+    Performs the virtual georeferencing using gdal translate
+    :param input_filename:
+    :param output_filename:
+    :param control_points: should be a list of tuples (x,y,long,lat)
+    :return: 0 return code for success
     """
     args = [path.join(environ["GDAL_HOME"], "gdal_translate"),
             "-a_srs",
             "+init=epsg:4326",
             "-of",
-            "VRT"] + [x for y in _points_to_string(mask_vectors) for x in y] + [
-            input_filename,
-            output_filename,
-            ]
-    print(args)
+            "VRT"] + [x for y in _points_to_string(control_points) for x in y] + [
+               input_filename,
+               output_filename,
+           ]
     return call(args)
 
 
-def virtual_georeference(filename, control_points):
-    pass
-
-
 def georeference(filename, control_points, opts):
+    """
+    $GDAL_PATH/gdalwarp $MEMORY_LIMIT $TRANSFORM_OPTION $RESAMPLE_OPTION \
+    -dstalpha $MASK_OPTIONS -s_srs 'EPSG:4326' $VIRTUAL_WARPED.vrt \
+    $REAL_WARPED_TIF -co TILED=YES -co COMPRESS=LZW
+    :param filename:
+    :param control_points:
+    :param opts:
+    :return:
+    """
     pass
 
 
