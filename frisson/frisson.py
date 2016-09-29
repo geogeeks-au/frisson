@@ -19,6 +19,7 @@ def convert_to_tiff(filename, output_filename):
             "-co", "PHOTOMETRIC=RGB",
             "-co", "PROFILE=BASELINE",
             output_filename]
+    print(" ".join(args))
     return call(args)
 
 
@@ -33,11 +34,13 @@ def add_overviews(filename):
             "16",
             "32",
             "64"]
+    print(" ".join(args))
     return call(args)
 
 
-def create_mask_vectors(output_filename, input_filename):
+def create_tile_index(output_filename, input_filename):
     """
+    Takes a warped raster and returns a shapefile
     $GDAL_PATH / gdaltindex - write_absolute_path $OUTPUT_INDEX_SHAPEFILE $INPUT_FOLDER / *.$EXT
     :return:
     """
@@ -46,10 +49,11 @@ def create_mask_vectors(output_filename, input_filename):
             output_filename,
             input_filename
             ]
+    print(" ".join(args))
     return call(args)
 
 
-def add_mask(input_filename, output_filename, mask_vectors):
+def add_mask(vector_file, layer_name, output_filename):
     """
     $GDAL_PATH/gdal_rasterize -i  -burn 17 -b 1 -b 2 -b 3 \
     $VECTOR_FILE -l $NAME_OF_VECTOR_FILE_LAYER $TARGET_TIF
@@ -67,10 +71,11 @@ def add_mask(input_filename, output_filename, mask_vectors):
             "3",
             "-of",
             "-l",
-            mask_vectors,
-            input_filename,
+            layer_name,
+            vector_file,
             output_filename,
            ]
+    print(" ".join(args))
     return call(args)
 
 
@@ -110,6 +115,7 @@ def virtual_georeference(input_filename, output_filename, control_points):
                input_filename,
                output_filename,
            ]
+    print(" ".join(args))
     return call(args)
 
 # NOTE need to check resample option is either
@@ -137,13 +143,14 @@ def georeference(input_filename, output_filename, control_points, opts):
     :return:
     """
     assert "RESAMPLE_OPTION" in opts
-    assert "MASK_OPTIONS" in opts
+    # Mask options not necessary
+    #assert "MASK_OPTIONS" in opts
     args = [
         path.join(environ["GDAL_HOME"], "gdalwarp"),
         "-r",
         opts["RESAMPLE_OPTION"],
-        "-dstalpha",
-        "-srcnodata"] + opts["MASK_OPTIONS"] + [
+        # "-dstalpha",
+        # "-srcnodata"] + opts["MASK_OPTIONS"] + [
         "-s_srs",
         "EPSG:4326",
         "-co",
@@ -175,4 +182,5 @@ def get_map_bbbox(filename):
     for line in output.split("\n"):
         if "Upper Right" in line or "Lower Left" in line:
             bbox.append(line)
+    print(" ".join(args))
     return bbox
