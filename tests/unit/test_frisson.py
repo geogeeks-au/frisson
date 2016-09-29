@@ -92,4 +92,5 @@ class TestPrintPoint(unittest.TestCase):
         ]
         for tf in test_files:
             if path.isfile(tf):
-                remove(tf)
+                #remove(tf)
+                pass

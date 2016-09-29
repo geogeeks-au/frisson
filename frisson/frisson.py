@@ -49,6 +49,31 @@ def create_mask_vectors(output_filename, input_filename):
     return call(args)
 
 
+def add_mask(input_filename, output_filename, mask_vectors):
+    """
+    $GDAL_PATH/gdal_rasterize -i  -burn 17 -b 1 -b 2 -b 3 \
+    $VECTOR_FILE -l $NAME_OF_VECTOR_FILE_LAYER $TARGET_TIF
+
+    """
+    args = [path.join(environ["GDAL_HOME"], "gdal_rasterize"),
+            "-i",
+            "-burn",
+            "17",
+            "-b",
+            "1",
+            "-b",
+            "2",
+            "-b",
+            "3",
+            "-of",
+            "-l",
+            mask_vectors,
+            input_filename,
+            output_filename,
+           ]
+    return call(args)
+
+
 def _points_to_string(gcp_points):
     """
     Converts a list of GCP points to a gdal_translate gcp argument string
@@ -67,17 +92,11 @@ def _points_to_string(gcp_points):
     return gcp_s
 
 
-def add_mask(input_filename, output_filename, mask_vectors):
-    """
-    $GDAL_PATH/gdal_translate -a_srs '+init=epsg:4326' -of VRT \
-    $CONVERTED_TIF $VIRTUAL_WARPED.vrt $MAGIC_GCP_STRING
-    """
-    pass
-
-
 def virtual_georeference(input_filename, output_filename, control_points):
     """
     Performs the virtual georeferencing using gdal translate
+    $GDAL_PATH/gdal_translate -a_srs '+init=epsg:4326' -of VRT \
+    $CONVERTED_TIF $VIRTUAL_WARPED.vrt $MAGIC_GCP_STRING
     :param input_filename:
     :param output_filename:
     :param control_points: should be a list of tuples (x,y,long,lat)
